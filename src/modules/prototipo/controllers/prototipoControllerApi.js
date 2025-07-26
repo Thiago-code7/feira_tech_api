@@ -8,16 +8,14 @@ class PrototipoControllerApi {
       const { titulo, descricao, categoria, expositorId } = req.body;
 
       if (!titulo || !descricao || !categoria || !expositorId) {
-        return res.status(400).json({ msg: 'Campos obrigatórios não informados!' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
-      // Verificar se expositor existe
       const expositor = await ExpositorModel.findByPk(expositorId);
       if (!expositor) {
         return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
 
-      // Verificar se título já existe para esse expositor
       const tituloExistente = await PrototipoModel.findOne({
         where: { titulo, expositorId },
       });
@@ -26,7 +24,7 @@ class PrototipoControllerApi {
       }
 
       const prototipo = await PrototipoModel.create({ titulo, descricao, categoria, expositorId });
-      return res.status(201).json({ msg: 'Protótipo cadastrado com sucesso!', prototipo });
+      return res.status(201).json({ msg: 'Protótipo cadastrado com sucesso', prototipo });
 
     } catch (error) {
       return res.status(500).json({ msg: 'Erro interno', error: error.message });
@@ -61,7 +59,6 @@ class PrototipoControllerApi {
     try {
       const { id: expositorId } = req.params;
 
-      // Verificar se expositor existe
       const expositor = await ExpositorModel.findByPk(expositorId);
       if (!expositor) {
         return res.status(404).json({ msg: 'Expositor não encontrado' });
@@ -96,7 +93,7 @@ class PrototipoControllerApi {
       const { titulo, descricao, categoria, expositorId } = req.body;
 
       if (!titulo || !descricao || !categoria || !expositorId) {
-        return res.status(400).json({ msg: 'Campos obrigatórios não informados!' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
       const prototipo = await PrototipoModel.findByPk(id);
@@ -104,13 +101,11 @@ class PrototipoControllerApi {
         return res.status(404).json({ msg: 'Protótipo não encontrado' });
       }
 
-      // Verificar se expositor existe
       const expositor = await ExpositorModel.findByPk(expositorId);
       if (!expositor) {
         return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
 
-      // Verificar se título já está cadastrado para este expositor em outro protótipo
       const tituloExistente = await PrototipoModel.findOne({
         where: {
           titulo,
@@ -128,7 +123,7 @@ class PrototipoControllerApi {
       prototipo.expositorId = expositorId;
 
       await prototipo.save();
-      return res.status(200).json({ msg: 'Protótipo atualizado com sucesso!', prototipo });
+      return res.status(200).json({ msg: 'Protótipo atualizado com sucesso', prototipo });
 
     } catch (error) {
       return res.status(500).json({ msg: 'Erro interno', error: error.message });
@@ -137,4 +132,3 @@ class PrototipoControllerApi {
 }
 
 module.exports = PrototipoControllerApi;
-

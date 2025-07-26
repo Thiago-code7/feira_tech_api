@@ -1,4 +1,5 @@
 const ExpositorModel = require('../models/Expositor');
+const { Op } = require('sequelize');
 
 class ExpositorController {
 
@@ -6,23 +7,20 @@ class ExpositorController {
     try {
       const { nome, email, instituicao } = req.body;
 
-      // Validação básica
       if (!nome || !email || !instituicao) {
-        return res.status(400).json({ message: 'Campos obrigatórios não informados' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
-      // Verificar email único
       const existeEmail = await ExpositorModel.findOne({ where: { email } });
       if (existeEmail) {
-        return res.status(400).json({ message: 'Email já cadastrado' });
+        return res.status(400).json({ msg: 'Email já cadastrado' });
       }
 
-      // Criar expositor
       const expositor = await ExpositorModel.create({ nome, email, instituicao });
-      return res.status(201).json({ message: 'Expositor cadastrado com sucesso', data: expositor });
+      return res.status(201).json({ msg: 'Expositor cadastrado com sucesso', expositor });
 
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ msg: error.message });
     }
   }
 
@@ -31,7 +29,7 @@ class ExpositorController {
       const expositores = await ExpositorModel.findAll();
       return res.status(200).json(expositores);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ msg: error.message });
     }
   }
 
@@ -40,11 +38,11 @@ class ExpositorController {
       const { id } = req.params;
       const expositor = await ExpositorModel.findByPk(id);
       if (!expositor) {
-        return res.status(404).json({ message: 'Expositor não encontrado' });
+        return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
       return res.status(200).json(expositor);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ msg: error.message });
     }
   }
 
@@ -53,12 +51,12 @@ class ExpositorController {
       const { id } = req.params;
       const expositor = await ExpositorModel.findByPk(id);
       if (!expositor) {
-        return res.status(404).json({ message: 'Expositor não encontrado' });
+        return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
       await ExpositorModel.destroy({ where: { id } });
-      return res.status(200).json({ message: 'Expositor removido com sucesso' });
+      return res.status(200).json({ msg: 'Expositor removido com sucesso' });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ msg: error.message });
     }
   }
 
@@ -68,24 +66,30 @@ class ExpositorController {
       const { nome, email, instituicao } = req.body;
 
       if (!nome || !email || !instituicao) {
-        return res.status(400).json({ message: 'Campos obrigatórios não informados' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
       const expositor = await ExpositorModel.findByPk(id);
       if (!expositor) {
-        return res.status(404).json({ message: 'Expositor não encontrado' });
+        return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
 
-      // Verifica se o novo email já está em uso por outro expositor
-      const emailExistente = await ExpositorModel.findOne({ where: { email, id: { [ExpositorModel.sequelize.Op.ne]: id } } });
+      const emailExistente = await ExpositorModel.findOne({ 
+        where: { 
+          email, 
+          id: { [Op.ne]: id } 
+        } 
+      });
       if (emailExistente) {
-        return res.status(400).json({ message: 'Email já cadastrado' });
+        return res.status(400).json({ msg: 'Email já cadastrado' });
       }
 
       await ExpositorModel.update({ nome, email, instituicao }, { where: { id } });
-      return res.status(201).json({ message: 'Expositor atualizado com sucesso' });
+
+      const expositorAtualizado = await ExpositorModel.findByPk(id);
+      return res.status(200).json({ msg: 'Expositor atualizado com sucesso', expositor: expositorAtualizado });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({ msg: error.message });
     }
   }
 }

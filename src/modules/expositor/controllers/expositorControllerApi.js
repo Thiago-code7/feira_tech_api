@@ -7,17 +7,16 @@ class ExpositorControllerApi {
       const { nome, email, instituicao } = req.body;
 
       if (!nome || !email || !instituicao) {
-        return res.status(400).json({ msg: 'Campos obrigatórios não informados!' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
-      // Verificar se email já existe
       const emailExistente = await ExpositorModel.findOne({ where: { email } });
       if (emailExistente) {
-        return res.status(400).json({ msg: 'Email já cadastrado!' });
+        return res.status(400).json({ msg: 'Email já cadastrado' });
       }
 
       const expositor = await ExpositorModel.create({ nome, email, instituicao });
-      return res.status(201).json({ msg: 'Expositor cadastrado com sucesso!', expositor });
+      return res.status(201).json({ msg: 'Expositor cadastrado com sucesso', expositor });
 
     } catch (error) {
       return res.status(500).json({ msg: 'Erro interno', error: error.message });
@@ -70,7 +69,7 @@ class ExpositorControllerApi {
       const { nome, email, instituicao } = req.body;
 
       if (!nome || !email || !instituicao) {
-        return res.status(400).json({ msg: 'Campos obrigatórios não informados!' });
+        return res.status(400).json({ msg: 'Campos obrigatórios não informados' });
       }
 
       const expositor = await ExpositorModel.findByPk(id);
@@ -78,7 +77,6 @@ class ExpositorControllerApi {
         return res.status(404).json({ msg: 'Expositor não encontrado' });
       }
 
-      // Verificar se o email já está em uso por outro expositor
       const emailExistente = await ExpositorModel.findOne({
         where: {
           email,
@@ -86,7 +84,7 @@ class ExpositorControllerApi {
         },
       });
       if (emailExistente) {
-        return res.status(400).json({ msg: 'Email já cadastrado!' });
+        return res.status(400).json({ msg: 'Email já cadastrado' });
       }
 
       expositor.nome = nome;
@@ -94,7 +92,7 @@ class ExpositorControllerApi {
       expositor.instituicao = instituicao;
       await expositor.save();
 
-      return res.status(201).json({ msg: 'Expositor atualizado com sucesso!', expositor });
+      return res.status(200).json({ msg: 'Expositor atualizado com sucesso', expositor });
 
     } catch (error) {
       return res.status(500).json({ msg: 'Erro interno', error: error.message });
