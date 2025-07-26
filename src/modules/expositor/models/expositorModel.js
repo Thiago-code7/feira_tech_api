@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../../../config/configDB');
+const {sequelize} = require('../../../../config/configDB');
 
 const ExpositorModel = sequelize.define('Expositor', {
   id: {

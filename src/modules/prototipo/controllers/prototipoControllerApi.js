@@ -1,5 +1,5 @@
 const PrototipoModel = require('../models/prototipoModel');
-const ExpositorModel = require('../models/expositorModel');
+const ExpositorModel = require('../../../modules/expositor/models/expositorModel');
 const { Op } = require('sequelize');
 
 class PrototipoControllerApi {

@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../../../config/configDB');
-const Expositor = require('../../expositor/models/Expositor');
+const {sequelize} = require('../../../../config/configDB');
+const Expositor = require('../../expositor/models/expositorModel');
 
 const PrototipoModel = sequelize.define('Prototipo', {
   id: {
@@ -36,8 +36,6 @@ const PrototipoModel = sequelize.define('Prototipo', {
   updatedAt: 'atualizado_em'
 });
 
-// Relacionamento
-Expositor.hasMany(PrototipoModel, { foreignKey: 'expositorId' });
-PrototipoModel.belongsTo(Expositor, { foreignKey: 'expositorId' });
+
 
 module.exports = PrototipoModel;

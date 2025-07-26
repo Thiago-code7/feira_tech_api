@@ -8,8 +8,8 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: 'postgres',
-    logging: true, // opcional
+    dialect: process.env.DB_DIALECT || 'mariadb', // agora usa variável do .env
+    logging: false, // pode deixar true para debug, ou false para silêncio
   }
 );
 

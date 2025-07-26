@@ -1,23 +1,32 @@
-const express = require('express');
-const { sequelize } = require('./src/config/configDB');
 require('dotenv').config();
+const express = require('express');
+const { sequelize } = require('./config/configDB');
 
 const expositorRoutes = require('./src/modules/expositor/routes/expositorRoutes');
 const prototipoRoutes = require('./src/modules/prototipo/routes/prototipoRoutes');
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Rotas
 app.use('/expositores', expositorRoutes);
 app.use('/prototipos', prototipoRoutes);
 
-//await sequelize.sync({ force: true });
-
-app.listen(PORT, () => {
-  console.log(`Aplicação rodando em http://localhost:${PORT}`);
-});
+// Só liga o servidor se este arquivo for executado diretamente
+if (require.main === module) {
+  sequelize.sync({ force: true })
+    .then(() => {
+      console.log('📦 Banco sincronizado com sucesso!');
+      app.listen(PORT, () => {
+        console.log(`🚀 Aplicação rodando em http://localhost:${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error('❌ Erro ao conectar no banco:', error);
+    });
+}
 
 module.exports = app;
+
+
